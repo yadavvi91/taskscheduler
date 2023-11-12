@@ -10,7 +10,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
     ports:
-      - "5433:5432"  # Map host port 5433 to container port 5432 (change as needed)
+      - "5432:5432"  # Map host port 5433 to container port 5432 (change as needed)
     networks:
       - my_network
 
