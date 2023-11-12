@@ -1,14 +1,12 @@
-# Use an OpenJDK runtime as a base image
-FROM openjdk:17-jdk-slim
-
-# Set the working directory in the container
+# Build Stage
+FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
+COPY . .
+RUN mvn clean install -DskipTests
 
-# Copy the JAR file into the container
-COPY target/taskscheduler-0.0.1-SNAPSHOT.jar /app/app.jar
-
-# Expose the port that the application will run on
+# Runtime Stage
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/taskscheduler-0.0.1-SNAPSHOT.jar /app/app.jar
 EXPOSE 8080
-
-# Command to run the application
 CMD ["java", "-jar", "app.jar"]
