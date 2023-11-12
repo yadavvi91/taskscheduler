@@ -15,7 +15,6 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-    identifier: Apache-2.0
   version: 1.0.11
 externalDocs:
   description: Find out more about Swagger
@@ -250,7 +249,7 @@ paths:
     # A user with `admin` role can hit this API
     post:
       summary: Assign a task to a specific user
-      operationId: assignTaskToUser
+      operationId: assignTaskToASpecificUser
       parameters:
         - name: taskId
           in: path
