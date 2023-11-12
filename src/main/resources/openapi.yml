@@ -1,0 +1,546 @@
+openapi: 3.1.0
+info:
+  title: Simple Task Scheduler - OpenAPI 3.1
+  description: |-
+    This is a Task Scheduler application where we have some basic functionalities like 
+    - Creating a new Task
+    - Creating a new User
+    - Assigning a task to a user
+    - Changing the status of a task
+    - Changing the progress percentage of a task
+
+  termsOfService: NONE
+  contact:
+    email: yadavvi91@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+    identifier: Apache-2.0
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+
+paths:
+  /api/v1/signup:
+    # NO NUMBER
+    # Anyone can hit this api
+    post:
+      summary: Create a Spring Security User
+      description: Creates a new Spring Security User and a corresponding Task User
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              ref: "#/components/schemas/SignUpRequest"
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Invalid User Details provided
+
+  /api/v1/token:
+    # NO NUMBER
+    # Anyone can hit this api
+    post:
+      summary: Generate JWT Token
+      description: Generates a JWT token for authentication
+      operationId: generateJwtToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JwtTokenRequest"
+      responses:
+        '200':
+          description: JWT Token generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwtTokenResponse"
+        '401':
+          description: Unauthorized
+
+  /api/v1/users/{userId}:
+    # NO NUMBER
+    # A user with `admin` role or the user which owns this task can hit this API
+    get:
+      summary: Get User Details
+      description: Gets the Task User Details (i.e. not the security user details)
+      operationId: getUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/RestResponseUserResponse"
+      security:
+        - jwt: []
+
+  /api/v1/users/{userId}/tasks:
+    # 6 - Get users assigned task
+    # A user with `admin` role or the user which owns this task can hit this API
+    get:
+      summary: Get a list of tasks assigned to a specific user
+      description: Get a list of tasks assigned to a specific user
+      operationId: getTasksOfAUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/RestResponseListOfTasksResponse"
+      security:
+        - jwt: []
+
+  /api/v1/tasks:
+    # 1 - Create Task
+    # A user with `admin` role can hit this API
+    post:
+      summary: Create a new Task
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TaskRequest"
+      responses:
+        '201':
+          description: Task created successfully
+        '400':
+          description: Invalid Task Details provided
+        '401':
+          description: Unauthorized (JWT token missing or invalid)
+    # 4 - Get All Tasks
+    # A user with `admin` role can hit this API
+    get:
+      summary: Get All Tasks
+      description: Get a list of all tasks
+      operationId: getAllTasks
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/RestResponseListOfTasksResponse"
+      security:
+        - jwt: []
+
+  /api/v1/tasks/{taskId}:
+    # NO NUMBER
+    # A user with `admin` role or the user who owns this task can hit this API
+    get:
+      summary: Get Task Details
+      description: Get details of a specific task
+      operationId: getTaskDetails
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/RestResponseTaskResponse"
+      security:
+        - jwt: []
+    # 2 - Update Task
+    # A user with `admin` role or the user who owns this task can hit this API
+    put:
+      summary: Update Task
+      description: Update details of a specific task
+      operationId: updateTask
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskRequest"
+      responses:
+        '200':
+          description: Task updated successfully
+        '400':
+          description: Invalid Task Details provided
+        '401':
+          description: Unauthorized (JWT token missing or invalid)
+        '404':
+          description: Task not found
+      security:
+        - jwt: []
+    # 3 - Delete Task
+    # A user with `admin` role or the user who owns this task can hit this API
+    delete:
+      summary: Delete Task
+      description: Delete a specific task
+      operationId: deleteTask
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task deleted successfully
+        '401':
+          description: Unauthorized (JWT token missing or invalid)
+        '404':
+          description: Task not found
+      security:
+        - jwt: []
+
+  /api/v1/tasks/{taskId}/assign:
+    # 5 - Assign Task
+    # A user with `admin` role can hit this API
+    post:
+      summary: Assign a task to a specific user
+      operationId: assignTaskToUser
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: The User to assign the task to
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserIdRequest"
+      responses:
+        '200':
+          description: Task assigned successfully
+        '400':
+          description: Invalid Task or User ID provided
+        '401':
+          description: Unauthorized (JWT token missing or invalid)
+
+  /api/v1/tasks/{taskId}/assign/{userId}:
+    # 5 (My implementation) - Assign Task
+    # A user with `admin` role can hit this API
+    post:
+      summary: Assign a task to a specific user
+      operationId: assignTaskToUser
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task assigned successfully
+        '400':
+          description: Invalid Task or User ID provided
+        '401':
+          description: Unauthorized (JWT token missing or invalid)
+
+  /api/v1/tasks/{taskId}/status:
+    # NO NUMBER
+    # A user with `admin` role or the user who owns this task can hit this API
+    put:
+      summary: Change the Status of a Task
+      operationId: changeTaskStatus
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TaskStatusChangeRequest"
+      responses:
+        '200':
+          description: Task status changed successfully
+        '400':
+          description: Invalid Task ID or Status Change Request
+        '401':
+          description: Unauthorized (JWT token missing or invalid)
+
+  /api/v1/tasks/{taskId}/progress:
+    # 7 - Set a tasks progress
+    # A user with `admin` role or the user who owns this task can hit this API
+    put:
+      summary: Change the Progress Percentage of a Task
+      operationId: changeTaskProgress
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TaskProgressChangeRequest"
+      responses:
+        '200':
+          description: Task progress changed successfully
+        '400':
+          description: Invalid Task ID or Progress Change Request
+        '401':
+          description: Unauthorized (JWT token missing or invalid)
+
+  /api/v1/tasks/overdue:
+    # 7 - Get overdue tasks
+    # A user with `admin` role can hit this API
+    get:
+      summary: Get Overdue Tasks
+      description: Get a list of tasks that are overdue
+      operationId: getOverdueTasks
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/RestResponseListOfTasksResponse"
+      security:
+        - jwt: []
+
+components:
+  securitySchemes:
+    jwt:
+      type: apiKey
+      in: header
+      name: Authorization
+  schemas:
+    SignUpRequest:
+      required:
+        - username
+        - email
+        - password
+        - firstName
+        - lastName
+      type: object
+      properties:
+        username:
+          maxLength: 20
+          minLength: 3
+          type: string
+        email:
+          maxLength: 50
+          minLength: 10
+          type: string
+        password:
+          maxLength: 40
+          minLength: 6
+          type: string
+        firstName:
+          maxLength: 20
+          minLength: 3
+          type: string
+        lastName:
+          maxLength: 20
+          minLength: 3
+          type: string
+    RestResponseSignupResponse:
+      type: object
+      properties:
+        data:
+          "$ref": "#/components/schemas/SignupResponse"
+        responseDate:
+          type: string
+          format: date-time
+        messages:
+          type: string
+        success:
+          type: boolean
+    SignupResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    JwtTokenRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    JwtTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+
+    RestResponseUserResponse:
+      type: object
+      properties:
+        data:
+          "$ref": "#/components/schemas/UserResponse"
+        responseDate:
+          type: string
+          format: date-time
+        messages:
+          type: string
+        success:
+          type: boolean
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        tasks:
+          type: array
+          items:
+            "$ref": "#/components/schemas/TaskResponse"
+    TaskResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        due_date:
+          type: string
+        taskStatus:
+          type: object
+          "$ref": "#/components/schemas/TaskStatus"
+    TaskStatus:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum:
+            - "Not Started"
+            - "In Progress"
+            - "Completed"
+        progressPercentage:
+          type: integer
+        timeStamp:
+          type: string
+          format: date-time
+
+    RestResponseTaskResponse:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/TaskResponse"
+        responseDate:
+          type: string
+          format: date-time
+        messages:
+          type: string
+        success:
+          type: boolean
+
+    RestResponseListOfTasksResponse:
+      type: object
+      properties:
+        data:
+          "$ref": "#/components/schemas/ListOfTasksResponse"
+        responseDate:
+          type: string
+          format: date-time
+        messages:
+          type: string
+        success:
+          type: boolean
+    ListOfTasksResponse:
+      type: object
+      properties:
+        tasks:
+          type: array
+          items:
+            "$ref": "#/components/schemas/TaskResponse"
+
+    TaskRequest:
+      type: object
+      required:
+        - title
+        - description
+        - due_date
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        due_date:
+          type: string
+          format: date  # Assuming the due_date is in date format
+    TaskStatusChangeRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          "$ref": "#/components/schemas/TaskStatus"  # Referencing the TaskStatus enum
+    TaskProgressChangeRequest:
+      type: object
+      required:
+        - progressPercentage
+      properties:
+        progressPercentage:
+          type: integer
+          minimum: 0
+          maximum: 100
+
+    UserIdRequest:
+      type: object
+      required:
+        - userId
+      properties:
+        userId:
+          type: string
+          description: The ID of the user to whom the task will be assigned
