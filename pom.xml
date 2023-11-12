@@ -86,29 +86,10 @@
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
-            <version>1.3.2</version>
+            <version>1.3.2</version> <!-- or the latest version available -->
+            <scope>provided</scope> <!-- make sure it's provided scope -->
         </dependency>
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>jackson-databind-nullable</artifactId>
-            <version>0.2.6</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.swagger.core.v3</groupId>
-                    <artifactId>swagger-annotations</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-core-jakarta</artifactId>
-            <version>2.2.7</version>
-        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -176,36 +157,45 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.0.1</version>
                 <executions>
                     <execution>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
+                            <generatorName>java</generatorName>
                             <inputSpec>src/main/resources/openapi.yml</inputSpec>
                             <output>${project.basedir}</output>
-                            <generatorName>java</generatorName>
-                            <addCompileSourceRoot>true</addCompileSourceRoot>
-                            <skipOverwrite>false</skipOverwrite>
+                            <templateDirectory>${project.basedir}/templates</templateDirectory>
+<!--                            <generatorName>java</generatorName>-->
+<!--                            <addCompileSourceRoot>true</addCompileSourceRoot>-->
+<!--                            <skipOverwrite>false</skipOverwrite>-->
 
-                            <modelNameSuffix>Dto</modelNameSuffix>
-                            <modelPackage>org.yadavvi.taskscheduler.model</modelPackage>
-                            <generateModels>true</generateModels>
-                            <generateModelTests>false</generateModelTests>
-                            <generateModelDocumentation>true</generateModelDocumentation>
+<!--                            <modelNameSuffix>Dto</modelNameSuffix>-->
+<!--                            <modelPackage>org.yadavvi.taskscheduler.model</modelPackage>-->
+<!--                            <generateModels>true</generateModels>-->
+<!--                            <generateModelTests>false</generateModelTests>-->
+<!--                            <generateModelDocumentation>true</generateModelDocumentation>-->
 
-                            <generateApis>false</generateApis>
-                            <generateSupportingFiles>true</generateSupportingFiles>
-                            <supportingFilesToGenerate>JSON.java</supportingFilesToGenerate>
+<!--                            <generateApis>false</generateApis>-->
+<!--                            <generateSupportingFiles>true</generateSupportingFiles>-->
+<!--                            <supportingFilesToGenerate>JSON.java</supportingFilesToGenerate>-->
 
-                            <library>jersey2</library>
 
                             <configOptions>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <groupId>${project.groupId}</groupId>
+                                <version>${project.version}</version>
+                                <serializableModel>true</serializableModel>
                                 <dateLibrary>java8-localdatetime</dateLibrary>
-                                <java8>true</java8>
-                                <useBeanValidation>true</useBeanValidation>
-                                <sourceFolder>src/gen/java</sourceFolder>
-                                <library>webclient</library>
+                                <sourceFolder>src/main/gen</sourceFolder>
+                                <basePackage>org.yadavvi.taskscheduler</basePackage>
+                                <invokerPackage>org.yadavvi.taskscheduler</invokerPackage>
+                                <configPackage>org.yadavvi.taskscheduler.config</configPackage>
+                                <modelPackage>org.yadavvi.taskscheduler.model</modelPackage>
+                                <apiPackage>org.yadavvi.taskscheduler.api</apiPackage>
                             </configOptions>
                         </configuration>
                     </execution>
