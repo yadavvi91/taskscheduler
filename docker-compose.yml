@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:latest
+    container_name: my_postgres
+    environment:
+      POSTGRES_DB: tasks
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"  # Map host port 5433 to container port 5432 (change as needed)
+    networks:
+      - my_network
+
+  # pgAdmin for managing PostgreSQL
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: my_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "5051:80"  # Map host port 5051 to container port 80 (change as needed)
+    depends_on:
+      - postgres
+    networks:
+      - my_network
+
+  # Redis server
+  redis:
+    image: redis:latest
+    container_name: my_redis
+    ports:
+      - "6379:6379"  # Map host port 6379 to container port 6379 (change as needed)
+    networks:
+      - my_network
+
+  # Spring Boot application
+  spring-app:
+    build:
+      context: .
+    image: task_scheduler:latest
+    container_name: task_scheduler
+    ports:
+      - "8080:8080"  # Map host port 8080 to container port 8080 (change as needed)
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
