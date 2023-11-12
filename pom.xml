@@ -61,6 +61,11 @@
             <version>3.6.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.gsonfire</groupId>
+            <artifactId>gson-fire</artifactId>
+            <version>1.8.5</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -147,7 +152,8 @@
                             <generateModelDocumentation>true</generateModelDocumentation>
 
                             <generateApis>false</generateApis>
-                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <supportingFilesToGenerate>JSON.java</supportingFilesToGenerate>
 
                             <library>jersey2</library>
 
@@ -155,7 +161,8 @@
                                 <dateLibrary>java8-localdatetime</dateLibrary>
                                 <java8>true</java8>
                                 <useBeanValidation>true</useBeanValidation>
-                                <sourceFolder>src/java</sourceFolder>
+                                <sourceFolder>src/gen/java</sourceFolder>
+                                <library>webclient</library>
                             </configOptions>
                         </configuration>
                     </execution>
