@@ -9,16 +9,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.yadavvi.taskscheduler.security.JwtTokenProvider;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JwtTokenProvider jwtProvider;
 
     @Autowired
-    protected SecurityConfig(UserDetailsService userDetailsService) {
+    protected SecurityConfig(UserDetailsService userDetailsService, JwtTokenProvider jwtProvider) {
         this.userDetailsService = userDetailsService;
+        this.jwtProvider = jwtProvider;
     }
 
     @Bean
