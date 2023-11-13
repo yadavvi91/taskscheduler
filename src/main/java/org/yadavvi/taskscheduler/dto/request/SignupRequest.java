@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @Builder
-public class SignUpRequest {
+public class SignupRequest {
     @NonNull
     @Size(min = 3, max = 20)
     private String username;
