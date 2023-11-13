@@ -11,8 +11,9 @@ public class Task {
     private Long id;
     private String title;
     private String description;
+    @Column(name = "due_date")
     private LocalDate dueDate;
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "user_id")
     private User user;
 }

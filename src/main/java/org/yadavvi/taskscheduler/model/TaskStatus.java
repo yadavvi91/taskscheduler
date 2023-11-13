@@ -17,6 +17,7 @@ public class TaskStatus {
     @JoinColumn(name = "user_id")
     private User user;
     private String status;
+    @Column(name = "progress_percentage")
     private int progressPercentage;
     private LocalDateTime timestamp;
 }
