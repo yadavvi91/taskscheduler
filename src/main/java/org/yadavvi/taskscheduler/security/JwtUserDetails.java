@@ -1,27 +1,30 @@
 package org.yadavvi.taskscheduler.security;
 
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.yadavvi.taskscheduler.model.User;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
+@Entity
+@Table(name = "app_users")  // This should match your actual table name
 public class JwtUserDetails implements UserDetails {
 
+    @Id
     private final Long id;
     private final String username;
     private final String email;
     private final String password;
-    private final Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUserDetails(Long id, String username, String email, String password,
-                          Collection<? extends GrantedAuthority> authorities) {
+    public JwtUserDetails(Long id, String username, String email, String password) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
-        this.authorities = authorities;
     }
 
     public static JwtUserDetails build(UserDetails userDetails, User user) {
@@ -29,13 +32,12 @@ public class JwtUserDetails implements UserDetails {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getPassword(),
-                userDetails.getAuthorities());
+                user.getPassword());
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     public Long getId() {
