@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.yadavvi.taskscheduler.dto.RestResponse;
+import org.yadavvi.taskscheduler.dto.request.JwtTokenRequest;
 import org.yadavvi.taskscheduler.dto.request.SignupRequest;
+import org.yadavvi.taskscheduler.dto.response.JwtTokenResponse;
 import org.yadavvi.taskscheduler.dto.response.SignupResponse;
 import org.yadavvi.taskscheduler.service.AuthenticationService;
 
@@ -26,4 +28,9 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(RestResponse.of(response));
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<RestResponse<JwtTokenResponse>> login(@RequestBody @Valid JwtTokenRequest request) {
+        JwtTokenResponse response = authenticationService.login(request);
+        return ResponseEntity.status(HttpStatus.OK).body(RestResponse.of(response));
+    }
 }

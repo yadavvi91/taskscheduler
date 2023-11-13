@@ -40,7 +40,8 @@ paths:
         '400':
           description: Invalid User Details provided
 
-  /api/v1/token:
+  # /api/v1/token:
+  /api/v1/login:
     # NO NUMBER
     # Anyone can hit this api
     post:
