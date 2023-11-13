@@ -145,10 +145,10 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <url>${spring.datasource.url}</url>
-                    <user>${spring.datasource.username}</user>
-                    <password>${spring.datasource.password}</password>
-                    <locations>${spring.flyway.locations}</locations>
+                    <url>jdbc:postgresql://localhost:5432/tasks</url>
+                    <user>admin</user>
+                    <password>password</password>
+                    <locations>classpath:db/migration</locations>
                 </configuration>
 
             </plugin>
