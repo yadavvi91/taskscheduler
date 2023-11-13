@@ -5,6 +5,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.yadavvi.taskscheduler.model.UserSpringSecurity;
 
 import java.util.Date;
 
@@ -17,7 +18,7 @@ public class JwtTokenProvider {
     private long EXPIRES_IN;
 
     public String generateJwtToken(Authentication authentication) {
-        JwtUserDetails userPrincipal = (JwtUserDetails) authentication.getPrincipal();
+        UserSpringSecurity userPrincipal = (UserSpringSecurity) authentication.getPrincipal();
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
