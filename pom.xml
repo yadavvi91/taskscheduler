@@ -132,6 +132,27 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>9.21.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                        <phase>compile</phase> <!-- You can choose a different phase if needed -->
+                    </execution>
+                </executions>
+                <configuration>
+                    <url>${spring.datasource.url}</url>
+                    <user>${spring.datasource.username}</user>
+                    <password>${spring.datasource.password}</password>
+                    <locations>${spring.flyway.locations}</locations>
+                </configuration>
+
+            </plugin>
+
             <!-- OpenAPI Generator Maven Plugin -->
             <!--            <plugin>-->
             <!--                <groupId>org.openapitools</groupId>-->
@@ -154,53 +175,53 @@
             <!--                    </execution>-->
             <!--                </executions>-->
             <!--            </plugin>-->
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.0.1</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <generatorName>java</generatorName>
-                            <inputSpec>src/main/resources/openapi.yml</inputSpec>
-                            <output>${project.basedir}</output>
-                            <templateDirectory>${project.basedir}/templates</templateDirectory>
-<!--                            <generatorName>java</generatorName>-->
-<!--                            <addCompileSourceRoot>true</addCompileSourceRoot>-->
-<!--                            <skipOverwrite>false</skipOverwrite>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.openapitools</groupId>-->
+            <!--                <artifactId>openapi-generator-maven-plugin</artifactId>-->
+            <!--                <version>7.0.1</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>generate-sources</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>generate</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <generatorName>java</generatorName>-->
+            <!--                            <inputSpec>src/main/resources/openapi.yml</inputSpec>-->
+            <!--                            <output>${project.basedir}</output>-->
+            <!--                            <templateDirectory>${project.basedir}/templates</templateDirectory>-->
+            <!--&lt;!&ndash;                            <generatorName>java</generatorName>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <addCompileSourceRoot>true</addCompileSourceRoot>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <skipOverwrite>false</skipOverwrite>&ndash;&gt;-->
 
-<!--                            <modelNameSuffix>Dto</modelNameSuffix>-->
-<!--                            <modelPackage>org.yadavvi.taskscheduler.model</modelPackage>-->
-<!--                            <generateModels>true</generateModels>-->
-<!--                            <generateModelTests>false</generateModelTests>-->
-<!--                            <generateModelDocumentation>true</generateModelDocumentation>-->
+            <!--&lt;!&ndash;                            <modelNameSuffix>Dto</modelNameSuffix>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <modelPackage>org.yadavvi.taskscheduler.model</modelPackage>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <generateModels>true</generateModels>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <generateModelTests>false</generateModelTests>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <generateModelDocumentation>true</generateModelDocumentation>&ndash;&gt;-->
 
-<!--                            <generateApis>false</generateApis>-->
-<!--                            <generateSupportingFiles>true</generateSupportingFiles>-->
-<!--                            <supportingFilesToGenerate>JSON.java</supportingFilesToGenerate>-->
+            <!--&lt;!&ndash;                            <generateApis>false</generateApis>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <generateSupportingFiles>true</generateSupportingFiles>&ndash;&gt;-->
+            <!--&lt;!&ndash;                            <supportingFilesToGenerate>JSON.java</supportingFilesToGenerate>&ndash;&gt;-->
 
 
-                            <configOptions>
-                                <artifactId>${project.artifactId}</artifactId>
-                                <groupId>${project.groupId}</groupId>
-                                <version>${project.version}</version>
-                                <serializableModel>true</serializableModel>
-                                <dateLibrary>java8-localdatetime</dateLibrary>
-                                <sourceFolder>src/main/gen</sourceFolder>
-                                <basePackage>org.yadavvi.taskscheduler</basePackage>
-                                <invokerPackage>org.yadavvi.taskscheduler</invokerPackage>
-                                <configPackage>org.yadavvi.taskscheduler.config</configPackage>
-                                <modelPackage>org.yadavvi.taskscheduler.model</modelPackage>
-                                <apiPackage>org.yadavvi.taskscheduler.api</apiPackage>
-                            </configOptions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--                            <configOptions>-->
+            <!--                                <artifactId>${project.artifactId}</artifactId>-->
+            <!--                                <groupId>${project.groupId}</groupId>-->
+            <!--                                <version>${project.version}</version>-->
+            <!--                                <serializableModel>true</serializableModel>-->
+            <!--                                <dateLibrary>java8-localdatetime</dateLibrary>-->
+            <!--                                <sourceFolder>src/main/gen</sourceFolder>-->
+            <!--                                <basePackage>org.yadavvi.taskscheduler</basePackage>-->
+            <!--                                <invokerPackage>org.yadavvi.taskscheduler</invokerPackage>-->
+            <!--                                <configPackage>org.yadavvi.taskscheduler.config</configPackage>-->
+            <!--                                <modelPackage>org.yadavvi.taskscheduler.model</modelPackage>-->
+            <!--                                <apiPackage>org.yadavvi.taskscheduler.api</apiPackage>-->
+            <!--                            </configOptions>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 
