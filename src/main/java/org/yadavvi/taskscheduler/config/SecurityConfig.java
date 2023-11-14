@@ -40,12 +40,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/v1/signup").permitAll()
-                        .requestMatchers("/api/v1/login").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/user/**").hasRole("USER")
-                        .anyRequest().authenticated()
+                        .requestMatchers("*").permitAll()
+                        .anyRequest().permitAll()
                 );
+////                        .requestMatchers("/api/v1/signup").permitAll()
+////                        .requestMatchers("/api/v1/login").permitAll()
+////                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+////                        .requestMatchers("/api/user/**").hasRole("USER")
+////                        .anyRequest().authenticated()
+//                );
         return http.build();
     }
 
@@ -65,7 +68,6 @@ public class SecurityConfig {
         UserDetails userDetails = User.withDefaultPasswordEncoder()
                 .username("admin")
                 .password("password")
-                .roles("ADMIN")
                 .build();
 
         return new InMemoryUserDetailsManager(userDetails);

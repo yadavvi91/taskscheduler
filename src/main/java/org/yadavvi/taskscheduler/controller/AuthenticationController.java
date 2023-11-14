@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.yadavvi.taskscheduler.dto.RestResponse;
 import org.yadavvi.taskscheduler.dto.request.JwtTokenRequest;
 import org.yadavvi.taskscheduler.dto.request.SignupRequest;
@@ -24,8 +21,8 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class AuthenticationController {
-    @Autowired
-    private final AuthenticationService authenticationService;
+//    @Autowired
+//    private final AuthenticationService authenticationService;
     @Autowired
     private final AuthenticationManager authenticationManager;
 
@@ -35,19 +32,25 @@ public class AuthenticationController {
     //     this.authenticationService = authenticationService;
     // }
 
-    @PostMapping("/signup")
-    public ResponseEntity<RestResponse<SignupResponse>> signup(@RequestBody @Valid SignupRequest request) {
-        SignupResponse response = authenticationService.signup(request);
+//    @PostMapping("/signup")
+//    public ResponseEntity<RestResponse<SignupResponse>> signup(@RequestBody @Valid SignupRequest request) {
+//        SignupResponse response = authenticationService.signup(request);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(RestResponse.of(response));
+//    }
+
+    @GetMapping("/hello")
+    public ResponseEntity<RestResponse<SignupResponse>> hello() {
+        SignupResponse response = SignupResponse.builder().message("hello-world").build();
         return ResponseEntity.status(HttpStatus.CREATED).body(RestResponse.of(response));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<RestResponse<JwtTokenResponse>> login(@RequestBody @Valid JwtTokenRequest request) {
+    public ResponseEntity<RestResponse<Authentication>> login(@RequestBody @Valid JwtTokenRequest request) {
         Authentication authenticationRequest =
                 UsernamePasswordAuthenticationToken.unauthenticated(request.getUsername(), request.getPassword());
         Authentication authenticationResponse =
                 this.authenticationManager.authenticate(authenticationRequest);
-        JwtTokenResponse response = authenticationService.login(request);
-        return ResponseEntity.status(HttpStatus.OK).body(RestResponse.of(response));
+       // JwtTokenResponse response = authenticationService.login(request);
+        return ResponseEntity.status(HttpStatus.OK).body(RestResponse.of(authenticationResponse));
     }
 }
