@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.yadavvi.taskscheduler.security.JwtTokenProvider;
 import org.yadavvi.taskscheduler.service.UserDetailsServiceImpl;
 
@@ -40,15 +43,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("*").permitAll()
-                        .anyRequest().permitAll()
-                );
-////                        .requestMatchers("/api/v1/signup").permitAll()
-////                        .requestMatchers("/api/v1/login").permitAll()
-////                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-////                        .requestMatchers("/api/user/**").hasRole("USER")
-////                        .anyRequest().authenticated()
-//                );
+                        .requestMatchers("/api/v1/hello").permitAll()
+                        .requestMatchers("/api/v1/login").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(Customizer.withDefaults())
+                .formLogin(Customizer.withDefaults());
+
         return http.build();
     }
 
@@ -58,7 +60,7 @@ public class SecurityConfig {
             PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        // authenticationProvider.setPasswordEncoder(passwordEncoder);
 
         return new ProviderManager(authenticationProvider);
     }
